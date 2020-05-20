@@ -1,0 +1,10 @@
+services:
+  web:
+    build: .
+    environment:
+      - "*"
+    port: ${PORT}
+    domain: ${HOST}
+    volumes:
+      # If content is empty, execute bash bin/create-empty-content.sh
+      - /app/content

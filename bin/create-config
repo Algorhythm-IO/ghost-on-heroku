@@ -60,6 +60,31 @@ function createConfig() {
     storage = {}
   }
 
+  var mailOptions;
+
+  if (!!process.env.MAILGUN_SMTP_LOGIN) {
+    mailOptions = {
+      service: 'Mailgun',
+      auth: {
+        user: process.env.MAILGUN_SMTP_LOGIN,
+        pass: process.env.MAILGUN_SMTP_PASSWORD
+      }
+    }
+  } else if (!!process.env.SES_SMTP_LOGIN) {
+    mailOptions = {
+      host: process.env.SES_SERVER_NAME,
+      port: process.env.SES_PORT,
+      secureConnection: true,
+      service: 'SES',
+      auth: {
+        user: process.env.SES_SMTP_LOGIN,
+        pass: process.env.SES_SMTP_PASSWORD
+      }
+    }
+  } else {
+    mailOptions = {};
+  }
+
   config = {
     url: process.env.APP_PUBLIC_URL,
     logging: {
@@ -68,13 +93,8 @@ function createConfig() {
     },
     mail: {
       transport: 'SMTP',
-      options: {
-        service: 'Mailgun',
-        auth: {
-          user: process.env.MAILGUN_SMTP_LOGIN,
-          pass: process.env.MAILGUN_SMTP_PASSWORD
-        }
-      }
+      from: process.env.MAIL_FROM_ADDRESS,
+      options: mailOptions
     },
     fileStorage: fileStorage,
     storage: storage,
